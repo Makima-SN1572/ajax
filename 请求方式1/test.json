@@ -1,0 +1,17 @@
+{
+    "users":[
+        {
+            "id":1,
+            "username":"makiam",
+            "password":"123456"
+
+        },
+        {
+            "id":2,
+            "username":"moko",
+            "password":"123456"
+
+        }
+    ],
+    "list":["111","222","333"]
+}

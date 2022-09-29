@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="text" name="" id="mytext">
+    <button id="myadd">add</button>
+    <ul class="list">
+    </ul>
+    <script type="module">
+        //import { pajax } from './util.js'
+        //console.log(ajax)
+        class ToList {
+            constructor(select) {
+                //挂数据
+                this.listEle = document.querySelector(select)
+                //装载数据  列表数据
+                this.listdata = []
+                this.init()//初始化工作
+            }
+            init() {
+                //初始化
+                this.bindEvent()
+                //获取数据的方法
+                this.getList().then(res => {
+                    this.listdata = res
+                    this.render()
+                })
+
+
+            }
+            //各个方法写好,这样在init里随时调用就行
+            bindEvent() {
+                //绑事件
+                this.listEle.onclick = (evt) => {
+                    //console.log(evt.target)
+                    //判断是button时执行remove
+                    if (evt.target.nodeName === "BUTTON") {
+                        this.removeItem(evt.target)
+                    }
+                }
+            }
+            async getList() {
+                //获取数据
+                var res1 = await fetch("http://localhost:3000/list")
+                var res2 = await res1.json()//.then(res=>res.json())第二种写法,两个res命名要重新取名
+                //console.log("list",res)
+                return res2
+            }
+            //渲染页面
+            render() {
+                //把this.listdata = res的数据挂在this.listEle = document.querySelector(select)上
+                //console.log("render")
+                this.listEle.innerHTML = this.listdata.map(item => `
+                <li>
+                    ${item.text}
+                    <button data-index=${item.id}>del</button>
+                </li>
+                `).join("")
+            }
+
+
+            async addItem(text) {
+                //console.log(text)
+                //在"数据库"添加后,成功回调里,页面添加
+                var res = await fetch("http://localhost:3000/list", {
+                    method: "POST",
+                    headers: {
+                        "content-type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        text
+                    })
+                }).then(res => res.json())
+                this.listdata = [...this.listdata, res]
+                this.render()
+
+
+            }
+            //调用targer
+            async removeItem(target) {
+                // console.log(target.dataset.index)//拿target自己身上的id值
+                target.parentNode.remove()
+                //删除数据库里的数据json里的
+                await fetch(`http://localhost:3000/list/${target.dataset.index}`, {
+
+                    method: "DELETE",
+                }).then(res => res.json())
+                console.log("删除成功")
+
+
+
+            }
+            updataItem() {
+
+            }
+
+        }
+        var obj = new ToList(".list")
+        console.log(obj)
+        myadd.onclick = function () {
+            obj.addItem(mytext.value)
+        }
+
+        console.log("显示加载中")
+
+
+        var q1 = fetch("http://localhost:3000/looplist").then(res => res.json())
+        var q2 = fetch("http://localhost:3000/datalist").then(res => res.json())
+        async function test() {
+            var res = await Promise.all([q1, q2])
+            console.log(res)
+            console.log("隐藏加载中...")
+        }
+        test()
+    </script>
+</body>
+
+</html>

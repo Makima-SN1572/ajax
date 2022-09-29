@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="util.js"></script>
+    <script>
+        //tiechui 已经登录
+        //第一个ajax的成功再嵌套ajax成功再嵌套ajax.....一直调用就是回调地狱
+        ajax({
+            url: "http://localhost:3000/news",
+            data: {
+                author: "kerwin"
+            },
+            success: function (res) {
+                console.log(res[0])
+                ajax({
+                    url: "http://localhost:3000/comments",
+                    data: {
+                        newsId:res[0].id//谁的id就找谁的评论
+                    },
+                    success: function (res) {
+                        console.log(res)
+                    }
+                })
+            }
+        })
+    </script>
+</body>
+
+</html>

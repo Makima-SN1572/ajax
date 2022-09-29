@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="util.js"></script>
+    <script>
+        //整体思路:当pajax实现承诺后继续.then然后return pajax 继续执行承诺,当这个兑现承诺后再.then去return兑现承诺直到结束不需要return,这里就三个步骤第三个就不需要retuen,要是拒绝承诺的话就走.catch,此时就可以防止回调地狱不断嵌套ajax
+        pajax({
+            url: "http://localhost:3000/news",
+            data: {
+                author: "kerwin"
+            }
+        }).then(res => { //
+            //console.log(res[0])
+            return pajax({
+                url: "http://localhost:3000/comments",
+                data: {
+                    newsId:res[0].id
+                }
+            })
+
+        }).then(res=>{
+            console.log(res)
+        }).catch(err=>{
+            console.log(err)
+        })
+    </script>
+</body>
+
+</html>

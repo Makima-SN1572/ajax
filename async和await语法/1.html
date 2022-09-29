@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script type="module">
+        import { pajax } from './util.js'
+        /*         console.log(1111)
+                // async只管控他的回调函数function test(){}
+                async function test() {
+                    //await 等待  await后面可放正常同步代码console.log(1111)这样不影响执行效果/重点是可以放promise对象
+                    var res = await pajax({
+                        //这里执行顺序url:"http://localhost:3000/news"==>var res = ====>  console.log(res)
+                        url: "http://localhost:3000/news",
+                        data: {
+                            author: "kerwin"
+                        }
+        
+                    })
+        
+                    //先等异步再执行正常代码
+                    //这里111和333先执行完成是因为await只能影响他内部的函数所以222会等他执行完成再执行222
+                    //console.log(res)
+                    var res1 = await pajax({
+                        url: "http://localhost:3000/comments",
+                        data: {
+                            newsId: res[0].id
+                        }
+                    })
+                    console.log(res1)
+                    return res1
+                }
+                //在await中拿到结果
+                test().then(res => {
+                    console.log("返回结果", res)
+                }).catch(err=>{
+                    console.log(err)
+                })
+                console.log(3333)
+         */
+        async function test() {
+            //此处,模拟 async function test内部出错,在内部捕获 1.try 2.catch
+
+            try {
+                var res = await pajax({
+
+                    url: "http://localhost:3000/news111",
+                    data: {
+                        author: "kerwin"
+                    }
+
+                })
+                var res1 = await pajax({
+                    url: "http://localhost:3000/comments",
+                    data: {
+                        newsId: res[0].id
+                    }
+                })
+                console.log("success", res1)
+            }catch (err) {
+                console.log("err",err)
+            }
+           
+            //这里就不会被影响,继续执行
+            console.log(1111)
+        }
+        test()
+    </script>
+</body>
+
+</html>

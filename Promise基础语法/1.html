@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var q = new Promise(function (resolve, reject) {
+            //异步
+            //这里用setTimeout举例ajax调用,两秒之后成功调用a()
+            setTimeout(()=>{
+                //成功兑现承诺
+                resolve(["11111"])//成功后传参
+
+                //失败兑现承诺
+                //reject()
+            },2000)
+
+            
+        })
+        //pending执行中
+        //fulilled兑现承诺
+        //reject拒绝承诺
+        //q是promise对象
+        //then和catch都会被promise函数调用
+        q.then(function (res) {//这里接收res形参
+            //兑现承诺,就执行这个函数
+            console.log("success")
+        }).catch(function () {
+            //拒绝承诺,就执行这个函数
+            console.log("fail")
+        })
+
+    </script>
+</body>
+
+</html>

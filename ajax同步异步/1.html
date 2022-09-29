@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var xhr = new XMLHttpRequest()
+        xhr.open("GET","1.json",true)   //./1.json
+        //true表示异步请求
+        //false表示同步请求
+        //同步放上面,因为send发送后接收很慢,浏览器会提示不提倡使用
+        /* xhr.onload = function(){
+            if(xhr.status===200){
+                console.log(xhr.responseText)
+            }
+        } */
+        xhr.send()
+
+        //回调函数是异步的  
+        //异步下面
+        xhr.onload = function(){
+            if(xhr.status===200){
+                console.log(xhr.responseText)
+            }
+        }
+        console.log("11111")
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="text" name="" id="mytext">
+    <button id="myadd">add</button>
+    <ul class="list">
+    </ul>
+    <script type="module">
+        import { pajax } from './util.js'
+        //console.log(ajax)
+        class ToList {
+            constructor(select) {
+                //挂数据
+                this.listEle = document.querySelector(select)
+                //装载数据  列表数据
+                this.listdata = []
+                this.init()//初始化工作
+            }
+            init() {
+                //初始化
+                this.bindEvent()
+                //获取数据的方法
+                this.getList().then(res => {
+                    this.listdata = res
+                    this.render()
+                })
+
+
+            }
+            //各个方法写好,这样在init里随时调用就行
+            bindEvent() {
+                //绑事件
+                this.listEle.onclick = (evt) => {
+                    //console.log(evt.target)
+                    //判断是button时执行remove
+                    if (evt.target.nodeName === "BUTTON") {
+                        this.removeItem(evt.target)
+                    }
+                }
+            }
+            getList() {
+                //获取数据
+                return pajax({
+                    url: "http://localhost:3000/list",
+                })
+            }
+            //渲染页面
+            render() {
+                //把this.listdata = res的数据挂在this.listEle = document.querySelector(select)上
+                //console.log("render")
+                this.listEle.innerHTML = this.listdata.map(item => `
+                <li>
+                    ${item.text}
+                    <button data-index=${item.id}>del</button>
+                </li>
+                `).join("")
+            }
+
+
+            addItem(text) {
+                console.log(text)
+                //在"数据库"添加后,成功回调里,页面添加
+                pajax({
+                    url: `http://localhost:3000/list`,
+                    method: "POST",
+                    data: {
+                        text    //简写
+                    }
+
+
+                }).then(res => {
+                    this.listdata = [...this.listdata, res]
+                    this.render()
+                })
+
+            }
+            //调用targer
+            removeItem(target) {
+                // console.log(target.dataset.index)//拿target自己身上的id值
+                target.parentNode.remove()
+                //删除数据库里的数据json里的
+                pajax({
+                    url: `http://localhost:3000/list/${target.dataset.index}`,
+                    method: "DELETE",
+                }).then(() => {
+                    console.log("删除成功")
+                })
+
+                
+                }
+            updataItem() {
+
+            }
+
+        }
+        var obj = new ToList(".list")
+        console.log(obj)
+        myadd.onclick = function () {
+            obj.addItem(mytext.value)
+        }
+
+        console.log("显示加载中")
+
+
+        var q1 = pajax({
+            url:"http://localhost:3000/looplist"
+
+        })
+        var q2 = pajax({
+            url:"http://localhost:3000/datalist"
+
+        })
+        //Promise.all并发处理  Promise.all接数组异步取数据,等q1,q2保证承诺完成再执行.then
+        Promise.all([q1,q2]).then(res=>{
+            console.log(res)
+            console.log("隐藏加载中...")
+
+        }).catch(err=>{
+            console.log(err)
+        })
+
+    </script>
+</body>
+
+</html>
